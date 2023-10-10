@@ -24,6 +24,15 @@ class BlobRepository {
       }
    }
 
+   async getBlobs(containerName) {
+      const containerClient = await this._blobServiceClient.getContainerClient(containerName);
+      let blobs = [];
+      for await (const blob of containerClient.listBlobsFlat()) {
+          blobs.push(blob);
+      }
+      return blobs;
+  }
+
    async uploadBlob(container,blob){
       try {
          const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);

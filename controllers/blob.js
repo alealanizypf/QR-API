@@ -1,6 +1,6 @@
 const BlobRepository = require("../repositories/blob")
 
-async function getBlob(req,res,next){
+async function getBlob(req,res){
    const blobRepository = new BlobRepository()
    const containerName = req.params.containerName;
    const fileName = req.params.fileName;
@@ -11,7 +11,14 @@ async function getBlob(req,res,next){
    }
 }
 
-async function uploadBlob(req,res,next){
+async function getBlobs(req,res) {
+   const blobRepository = new BlobRepository();
+   const containerName = req.params.containerName;
+   const blobs = await blobRepository.getBlobs(containerName)
+   res.status(200).send(blobs)
+}
+
+async function uploadBlob(req,res){
    const blobRepository = new BlobRepository()
    const { containerName } = req.body;
    const { originalname,buffer } = req.file;
@@ -22,7 +29,7 @@ async function uploadBlob(req,res,next){
    }
 }
 
-async function deleteBlob(req,res,next){
+async function deleteBlob(req,res){
    const blobRepository = new BlobRepository()
    const { containerName, fileName } = req.body;
    const response = await blobRepository.getBlob(containerName,fileName);
@@ -33,6 +40,7 @@ async function deleteBlob(req,res,next){
 
 module.exports={
    getBlob,
+   getBlobs,
    uploadBlob,
    deleteBlob,
 }
