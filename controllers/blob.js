@@ -7,7 +7,7 @@ async function getBlob(req,res){
    
    const blob = await blobRepository.getBlob(containerName,fileName);
    if(blob){
-      res.status(200).send(blob)
+      res.status(200).send(blob.url)
    }
 }
 

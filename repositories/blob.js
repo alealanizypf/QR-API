@@ -16,7 +16,7 @@ class BlobRepository {
       try {
          const containerName = container.toLowerCase();
          const containerClient = this._blobServiceClient.getContainerClient(containerName);
-         const response = await containerClient.getBlockBlobClient(fileName).downloadToBuffer()
+         const response = await containerClient.getBlockBlobClient(fileName)
 
          return response;
       } catch (error) {
@@ -62,7 +62,7 @@ class BlobRepository {
          const containerClient = this._blobServiceClient.getContainerClient(containerName);
          const response = await containerClient
             .getBlockBlobClient(fileName)
-            .deleteIfExists()
+            .delete();
 
          return response;
       } catch (error) {
