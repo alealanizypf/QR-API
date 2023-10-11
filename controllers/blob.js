@@ -15,11 +15,15 @@ async function getBlob(req,res,next){
    }
 }
 
-async function getBlobs(req,res) {
-   const blobRepository = new BlobRepository();
-   const containerName = req.params.containerName;
-   const blobs = await blobRepository.getBlobs(containerName)
-   res.status(200).send({ data: blobs })
+async function getBlobs(req,res,next) {
+   try {
+      const blobRepository = new BlobRepository();
+      const containerName = req.params.containerName;
+      const blobs = await blobRepository.getBlobs(containerName)
+      res.status(200).send({ data: blobs })
+   } catch (error) {
+      next(error)
+   }
 }
 
 async function uploadBlob(req,res,next){
@@ -37,11 +41,15 @@ async function uploadBlob(req,res,next){
 }
 
 async function deleteBlob(req,res){
-   const blobRepository = new BlobRepository()
-   const { containerName, fileName } = req.body;
-   const response = await blobRepository.deleteBlob(containerName,fileName);
-   if(response){
-      res.status(200).send({message:`se borró el archivo ${fileName}`})
+   try {
+      const blobRepository = new BlobRepository()
+      const { containerName, fileName } = req.body;
+      const response = await blobRepository.deleteBlob(containerName,fileName);
+      if(response){
+         res.status(200).send({message:`se borró el archivo ${fileName}`})
+      }
+   } catch (error) {
+      next(error)      
    }
 }
 
