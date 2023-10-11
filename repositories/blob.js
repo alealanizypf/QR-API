@@ -13,15 +13,19 @@ class BlobRepository {
    }
 
    async getBlob(container,fileName){
-      try {
-         const containerName = container.toLowerCase();
-         const containerClient = this._blobServiceClient.getContainerClient(containerName);
-         const response = await containerClient.getBlockBlobClient(fileName)
-
-         return response;
-      } catch (error) {
-         console.error(error)
+      const containerName = container.toLowerCase();
+      const containerClient = this._blobServiceClient.getContainerClient(containerName);
+      const blockBlobClient  = await containerClient.getBlockBlobClient(fileName);
+      const response = {}
+      if(blockBlobClient.exists()){
+         response.url = blockBlobClient.url;
+         response.tags = [];
+         let result = await blockBlobClient.getTags();
+         for (const tag in result.tags) {
+            response.tags.push({ [tag]: result.tags[tag] })
+         }
       }
+      return response;
    }
 
    async getBlobs(containerName) {
@@ -66,7 +70,7 @@ class BlobRepository {
 
          return response;
       } catch (error) {
-         console.error(error)
+         next(error)
       }
    }
 }

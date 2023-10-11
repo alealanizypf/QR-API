@@ -1,13 +1,17 @@
 const BlobRepository = require("../repositories/blob")
 
-async function getBlob(req,res){
+async function getBlob(req,res,next){
    const blobRepository = new BlobRepository()
    const containerName = req.params.containerName;
    const fileName = req.params.fileName;
    
-   const blob = await blobRepository.getBlob(containerName,fileName);
-   if(blob){
-      res.status(200).send(blob.url)
+   try {
+      const blob = await blobRepository.getBlob(containerName,fileName);
+      if(blob){
+         res.status(200).send({ data: blob })
+      }
+   } catch (error) {
+      next(error)      
    }
 }
 
@@ -15,7 +19,7 @@ async function getBlobs(req,res) {
    const blobRepository = new BlobRepository();
    const containerName = req.params.containerName;
    const blobs = await blobRepository.getBlobs(containerName)
-   res.status(200).send(blobs)
+   res.status(200).send({ data: blobs })
 }
 
 async function uploadBlob(req,res){
@@ -25,7 +29,7 @@ async function uploadBlob(req,res){
    
    const sasToken = await blobRepository.uploadBlob(containerName,{originalname,buffer});
    if(sasToken){
-      res.status(200).send({message:"se subio el archivo"})
+      res.status(200).send({message:"archivo subido"})
    }
 }
 
