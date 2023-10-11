@@ -51,6 +51,17 @@ class BlobRepository {
       return response
    }
 
+   async updateBlob(container,name,tags){
+      console.log("tags",tags)
+         const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);
+         const blobServiceClient = new BlobServiceClient(storage_account_url,sharedKeyCredential);
+         const containerName = container.toLowerCase();
+         const containerClient = blobServiceClient.getContainerClient(containerName);
+         const blockBlobClient = await containerClient.getBlockBlobClient(name)
+         const response = await blockBlobClient.setTags(tags);
+         return response
+   }
+
    async deleteBlob(container,fileName){
       try {
          const containerName = container.toLowerCase();
