@@ -39,7 +39,7 @@ async function uploadBlob(req,res,next){
 async function deleteBlob(req,res){
    const blobRepository = new BlobRepository()
    const { containerName, fileName } = req.body;
-   const response = await blobRepository.getBlob(containerName,fileName);
+   const response = await blobRepository.deleteBlob(containerName,fileName);
    if(response){
       res.status(200).send({message:`se borró el archivo ${fileName}`})
    }

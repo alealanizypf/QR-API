@@ -38,7 +38,6 @@ class BlobRepository {
   }
 
    async uploadBlob(container,blob,tags){
-      console.log(typeof tags,tags);
       const tagsJson = JSON.parse(tags)
       const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);
       const blobServiceClient = new BlobServiceClient(storage_account_url,sharedKeyCredential);
@@ -59,7 +58,6 @@ class BlobRepository {
          const response = await containerClient
             .getBlockBlobClient(fileName)
             .delete();
-
          return response;
       } catch (error) {
          next(error)
