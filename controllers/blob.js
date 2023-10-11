@@ -22,14 +22,17 @@ async function getBlobs(req,res) {
    res.status(200).send({ data: blobs })
 }
 
-async function uploadBlob(req,res){
-   const blobRepository = new BlobRepository()
-   const { containerName } = req.body;
-   const { originalname,buffer } = req.file;
-   
-   const sasToken = await blobRepository.uploadBlob(containerName,{originalname,buffer});
-   if(sasToken){
-      res.status(200).send({message:"archivo subido"})
+async function uploadBlob(req,res,next){
+   try {
+      const blobRepository = new BlobRepository()
+      const { containerName,tags } = req.body;
+      const { originalname,buffer } = req.file;
+      const sasToken = await blobRepository.uploadBlob(containerName,{originalname,buffer},tags);
+      if(sasToken){
+         res.status(200).send({message:"archivo subido"})
+      }
+   } catch (error) {
+      next(error)      
    }
 }
 

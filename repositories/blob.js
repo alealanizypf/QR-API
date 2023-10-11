@@ -37,27 +37,19 @@ class BlobRepository {
       return blobs;
   }
 
-   async uploadBlob(container,blob){
-      try {
-         const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);
-         const blobServiceClient = new BlobServiceClient(storage_account_url,sharedKeyCredential);
-   
-         const containerName = container.toLowerCase();
-         const containerClient = blobServiceClient.getContainerClient(containerName);
-         const blockBlobClient = await containerClient.getBlockBlobClient(blob.originalname).uploadData(blob.buffer);
-         const sasToken = generateBlobSASQueryParameters({
-            containerName: containerName,
-            blobName: blob.originalname,
-            expiresOn: new Date(new Date().valueOf() + 86400),
-            permissions: BlobSASPermissions.parse("racwd")
-         }, sharedKeyCredential);
-            
-         const sasUrl = `${blockBlobClient.url}?${sasToken}`;
-            
-         return sasUrl;
-      } catch (error) {
-         console.error(error)
-      }
+   async uploadBlob(container,blob,tags){
+      console.log(typeof tags,tags);
+      const tagsJson = JSON.parse(tags)
+      const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);
+      const blobServiceClient = new BlobServiceClient(storage_account_url,sharedKeyCredential);
+
+      const containerName = container.toLowerCase();
+      const containerClient = blobServiceClient.getContainerClient(containerName);
+      const blockBlobClient = await containerClient.getBlockBlobClient(blob.originalname)
+      await blockBlobClient.uploadData(blob.buffer);
+      const response = await blockBlobClient.setTags(tagsJson);
+      
+      return response
    }
 
    async deleteBlob(container,fileName){
