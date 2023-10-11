@@ -18,7 +18,7 @@ class BlobRepository {
       const blockBlobClient  = await containerClient.getBlockBlobClient(fileName);
       const response = {}
       if(blockBlobClient.exists()){
-         response.url = blockBlobClient.url;
+         response.url = await getBlobSasUri(container,fileName);
          response.tags = [];
          let result = await blockBlobClient.getTags();
          for (const tag in result.tags) {
@@ -64,5 +64,20 @@ class BlobRepository {
       }
    }
 }
-
 module.exports = BlobRepository
+
+function getBlobSasUri(container,fileName){
+   const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);
+   const blobSas = generateBlobSASQueryParameters(
+      {
+        containerName: container,
+        fileName,
+        permissions: BlobSASPermissions.parse("r"),
+        startsOn: new Date(),
+        expiresOn: new Date(new Date().valueOf() + 86400),
+      },
+      sharedKeyCredential
+   );
+   console.log("BLOBSAS",blobSas);
+   return `https://${azure_storage_account_name}.blob.core.windows.net/${container}/${fileName}?${blobSas}`;
+}
