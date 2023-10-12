@@ -40,6 +40,19 @@ async function uploadBlob(req,res,next){
    }
 }
 
+async function updateBlob(req,res,next){
+   try {
+      const blobRepository = new BlobRepository()
+      const { name ,containerName,tags } = req.body;
+      const sasToken = await blobRepository.updateBlob(containerName,name,tags);
+      if(sasToken){
+         res.status(200).send({message:"archivo actualizado"})
+      }
+   } catch (error) {
+      next(error)      
+   }
+}
+
 async function deleteBlob(req,res){
    try {
       const blobRepository = new BlobRepository()
@@ -58,4 +71,5 @@ module.exports={
    getBlobs,
    uploadBlob,
    deleteBlob,
+   updateBlob
 }
