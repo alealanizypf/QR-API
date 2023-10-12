@@ -32,7 +32,20 @@ class BlobRepository {
       const containerClient = await this._blobServiceClient.getContainerClient(containerName);
       let blobs = [];
       for await (const blob of containerClient.listBlobsFlat()) {
-          blobs.push(blob);
+         const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
+
+         const result = await blockBlobClient.getTags();
+         const tags = [];
+         for (const tag in result.tags) {
+            tags.push({ [tag]: result.tags[tag]})
+         }
+
+         let blobInserted = {
+            name: blob.name,
+            updatedAt: blob.properties.createdOn,
+            tags: tags,
+         }
+         blobs.push(blobInserted);
       }
       return blobs;
   }
