@@ -19,10 +19,10 @@ class BlobRepository {
       const response = {}
       if(blockBlobClient.exists()){
          response.url = await getBlobSasUri(container,fileName);
-         response.tags = [];
+         response.tags = {};
          let result = await blockBlobClient.getTags();
          for (const tag in result.tags) {
-            response.tags.push({ [tag]: result.tags[tag] })
+            response.tags[tag]= result.tags[tag];
          }
       }
       return response;
@@ -35,9 +35,9 @@ class BlobRepository {
          const blockBlobClient = containerClient.getBlockBlobClient(blob.name);
 
          const result = await blockBlobClient.getTags();
-         const tags = [];
+         const tags = {};
          for (const tag in result.tags) {
-            tags.push({ [tag]: result.tags[tag]})
+            tags[tag]= result.tags[tag];
          }
 
          let blobInserted = {
