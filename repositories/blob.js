@@ -65,7 +65,6 @@ class BlobRepository {
    }
 
    async updateBlob(container,name,tags){
-      console.log("tags",tags)
          const sharedKeyCredential = new StorageSharedKeyCredential(azure_storage_account_name, azure_storage_key);
          const blobServiceClient = new BlobServiceClient(storage_account_url,sharedKeyCredential);
          const containerName = container.toLowerCase();
@@ -102,6 +101,5 @@ function getBlobSasUri(container,fileName){
       },
       sharedKeyCredential
    );
-   console.log("BLOBSAS",blobSas);
    return `https://${azure_storage_account_name}.blob.core.windows.net/${container}/${fileName}?${blobSas}`;
 }
