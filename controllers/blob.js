@@ -7,11 +7,9 @@ async function getBlob(req,res,next){
    
    try {
       const blob = await blobRepository.getBlob(containerName,fileName);
-      if(blob){
-         res.status(200).send({ data: blob })
-      }
+         res.status(200).send({ success: true, data: blob })
    } catch (error) {
-      next(error)      
+      res.status(200).send({ success: false, message: "Video not found" })
    }
 }
 
